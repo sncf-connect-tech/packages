@@ -163,7 +163,6 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     return context
         .getPackageManager()
         .getLaunchIntentForPackage(packageName)
-        .setAction(Intent.ACTION_RUN)
         .putExtra(EXTRA_ACTION, type)
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
