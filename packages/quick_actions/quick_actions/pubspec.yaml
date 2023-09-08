@@ -23,7 +23,7 @@ dependencies:
   quick_actions_android:
     git:
       url: https://github.com/sncf-connect-tech/packages.git
-      ref: quick_actions-v1.0.5-sncf-2
+      ref: quick_actions-v1.0.5-sncf-3
       path: packages/quick_actions/quick_actions_android
   quick_actions_ios: ^1.2.0
   quick_actions_platform_interface: ^1.1.0
