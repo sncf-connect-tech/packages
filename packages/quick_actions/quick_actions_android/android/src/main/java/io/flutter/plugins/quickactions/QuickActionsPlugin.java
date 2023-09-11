@@ -22,6 +22,8 @@ import io.flutter.plugins.quickactions.Messages.AndroidQuickActionsFlutterApi;
 /** QuickActionsPlugin */
 public class QuickActionsPlugin implements FlutterPlugin, ActivityAware, NewIntentListener {
   private static final String TAG = "QuickActionsAndroid";
+  private static final String CHANNEL_ID = "plugins.flutter.io/quick_actions_android";
+  private static ShortcutIntentBuilder shortcutIntentBuilder;
 
   private QuickActions quickActions;
   private AndroidQuickActionsFlutterApi quickActionsFlutterApi;
@@ -41,6 +43,10 @@ public class QuickActionsPlugin implements FlutterPlugin, ActivityAware, NewInte
   @VisibleForTesting
   QuickActionsPlugin(@NonNull AndroidSdkChecker capabilityChecker) {
     this.sdkChecker = capabilityChecker;
+  }
+
+  public static void setupShortcutIntentBuilder(ShortcutIntentBuilder builder) {
+    shortcutIntentBuilder = builder;
   }
 
   @Override
@@ -112,5 +118,17 @@ public class QuickActionsPlugin implements FlutterPlugin, ActivityAware, NewInte
       }
     }
     return false;
+  }
+
+  private void setupChannel(BinaryMessenger messenger, Context context, Activity activity) {
+    channel = new MethodChannel(messenger, CHANNEL_ID);
+    handler.setupIntentBuilder(shortcutIntentBuilder);
+    channel.setMethodCallHandler(handler);
+  }
+
+  private void teardownChannel() {
+    channel.setMethodCallHandler(null);
+    channel = null;
+    handler = null;
   }
 }
