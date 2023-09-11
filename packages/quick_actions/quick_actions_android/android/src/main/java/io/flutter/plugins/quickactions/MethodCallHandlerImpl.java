@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
+
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 
 class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
   protected static final String EXTRA_ACTION = "some unique action key";
+
+  private ShortcutIntentBuilder shortcutIntentBuilder = null;
 
   private final Context context;
   private Activity activity;
@@ -159,13 +162,21 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
 
   private Intent getIntentToOpenMainActivity(String type) {
     final String packageName = context.getPackageName();
-
+    if (shortcutIntentBuilder != null) {
+      return shortcutIntentBuilder.buildIntent(type)
+        .putExtra(EXTRA_ACTION, type);
+    }
     return context
         .getPackageManager()
         .getLaunchIntentForPackage(packageName)
+        .setAction(Intent.ACTION_RUN)
         .putExtra(EXTRA_ACTION, type)
-        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+  }
+
+  public void setupIntentBuilder(ShortcutIntentBuilder builder) {
+    shortcutIntentBuilder = builder;
   }
 
   static class UiThreadExecutor implements Executor {
@@ -177,3 +188,4 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     }
   }
 }
+
