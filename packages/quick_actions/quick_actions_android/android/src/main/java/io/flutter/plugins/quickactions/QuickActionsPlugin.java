@@ -119,17 +119,4 @@ public class QuickActionsPlugin implements FlutterPlugin, ActivityAware, NewInte
     }
     return false;
   }
-
-  private void setupChannel(BinaryMessenger messenger, Context context, Activity activity) {
-    channel = new MethodChannel(messenger, CHANNEL_ID);
-    handler = new MethodCallHandlerImpl(context, activity);
-    handler.setupIntentBuilder(shortcutIntentBuilder);
-    channel.setMethodCallHandler(handler);
-  }
-
-  private void teardownChannel() {
-    channel.setMethodCallHandler(null);
-    channel = null;
-    handler = null;
-  }
 }
